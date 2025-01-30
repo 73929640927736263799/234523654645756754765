@@ -3,7 +3,7 @@ local LocalPlayer = Players.LocalPlayer
 
 local authorizedUsers = {
     ["QT_xAraa"] = true,
-    ["shot16kill"] = true,
+    ["Shot16kill"] = true,
     ["philippinesBraxy123"] = true,
 	["Brxy_Alt"] = true,
 	["Bowmbaclaat"] = true,
