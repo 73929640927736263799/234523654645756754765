@@ -30,7 +30,7 @@ local function OnChatMessage(player, message)
             if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
                 local Humanoid = LocalPlayer.Character.Humanoid
                 if Humanoid.Health >= 1e18 then
-                    ReplicatedStorage:WaitForChild("SpawnCharacterEvent"):FireServer("MainSpawn")
+                    ReplicatedStorage:WaitForChild("RemoteEvent"):WaitForChild("SpawnCharacterEvent"):FireServer("MainSpawn")
                 end
             end
         end
