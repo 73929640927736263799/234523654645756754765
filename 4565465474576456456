@@ -5,7 +5,7 @@ local LocalPlayer = Players.LocalPlayer
 local PlaceId = game.PlaceId
 
 local Admins = {
-	["QT_xAraa"] = true,
+    ["QT_xAraa"] = true,
     ["Shot16kill"] = true,
     ["philippinesBraxy123"] = true,
     ["Brxy_Alt"] = true,
@@ -42,7 +42,7 @@ local function OnChatMessage(player, message)
         end
 
         local match5 = message:lower():match(">/%s*removeff%s+([%w_]+)")
-        if match5 then
+        if match5 and LocalPlayer.Name:lower():find(match5) then
             local FFDetector = game.Workspace:FindFirstChild("ForceFieldDetectorParts")
             if FFDetector then
                 FFDetector:Destroy()
