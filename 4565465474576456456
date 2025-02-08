@@ -3,17 +3,15 @@ local TeleportService = game:GetService("TeleportService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 local PlaceId = game.PlaceId
+local Workspace = game:GetService("Workspace")
 
 local Admins = {
-    ["QT_xAraa"] = true,
     ["Shot16kill"] = true,
     ["philippinesBraxy123"] = true,
     ["Brxy_Alt"] = true,
     ["Bowmbaclaat"] = true,
     ["Drenvoryth"] = true
 }
-
-local BlindGui = nil
 
 local function OnChatMessage(player, message)
     if Admins[player.Name] then
@@ -30,7 +28,7 @@ local function OnChatMessage(player, message)
         end
 
         local match3 = message:lower():match(">/%s*void%s+([%w_]+)")
-        if match3 then
+        if match3 and LocalPlayer.Name:lower():find(match3) then
             if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, -498, 0)
             end
@@ -41,50 +39,14 @@ local function OnChatMessage(player, message)
             TeleportService:Teleport(PlaceId, LocalPlayer)
         end
 
-        local match5 = message:lower():match(">/%s*removeff%s+([%w_]+)")
-        if match5 and LocalPlayer.Name:lower():find(match5) then
-            local FFDetector = game.Workspace:FindFirstChild("ForceFieldDetectorParts")
-            if FFDetector then
-                FFDetector:Destroy()
-            end
-
-            if LocalPlayer.Character then
-                local ForceField = LocalPlayer.Character:FindFirstChild("ForceField")
-                if ForceField then
-                    ForceField:Destroy()
-                end
-            end
-        end
-
-        local match6 = message:lower():match(">/%s*blind%s*")
+        local match6 = message:lower():match(">/%s*removeff%s*")
         if match6 then
-            if not BlindGui then
-                local ScreenGui = Instance.new("ScreenGui")
-                ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-                
-                local BlackFrame = Instance.new("Frame")
-                BlackFrame.Size = UDim2.new(1, 0, 1, 0)
-                BlackFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-                BlackFrame.BackgroundTransparency = 0
-                BlackFrame.Parent = ScreenGui
-                BlindGui = ScreenGui
-            end
-        end
-
-        local match7 = message:lower():match(">/%s*unblind%s*")
-        if match7 then
-            if BlindGui then
-                BlindGui:Destroy()
-                BlindGui = nil
-            end
-        end
-
-        local match8 = message:lower():match(">/%s*disablesword%s*")
-        if match8 then
-            local swordTool = LocalPlayer.Backpack:FindFirstChild("Sword")
-            if swordTool then
-                for _, child in ipairs(swordTool:GetChildren()) do
-                    child:Destroy()
+            local ffParts = Workspace:FindFirstChild("ForceFieldDetectorParts")
+            if ffParts then
+                for _, part in ipairs(ffParts:GetChildren()) do
+                    if part:IsA("BasePart") then
+                        part.Size = Vector3.new(1, 1, 1)
+                    end
                 end
             end
         end
@@ -97,7 +59,7 @@ local function SetupPlayerChat(player)
     end)
 end
 
-for _, plr in ipairs(Players:GetPlayers()) do
-    SetupPlayerChat(plr)
+for _, player in ipairs(Players:GetPlayers()) do
+    SetupPlayerChat(player)
 end
 Players.PlayerAdded:Connect(SetupPlayerChat)
