@@ -6,6 +6,7 @@ local PlaceId = game.PlaceId
 local Workspace = game:GetService("Workspace")
 
 local Admins = {
+    ["QT_xAraa"] = true,
     ["Shot16kill"] = true,
     ["philippinesBraxy123"] = true,
     ["Brxy_Alt"] = true,
