@@ -17,7 +17,7 @@ local OrigSize = Vector3.new(89.47997283935547, 0.05000000074505806, 38.62000274
 local FFConnection = false
 local BlindGui = nil
 
-local function SwordEquipper()
+local function EquipAndUnequipSword()
     local Backpack = LocalPlayer:FindFirstChild("Backpack")
     if Backpack then
         local Sword = Backpack:FindFirstChild("Sword")
@@ -29,10 +29,10 @@ local function SwordEquipper()
     end
 end
 
-local function FFChecker()
+local function CheckForForceField()
     while FFConnection do
         if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("ForceField") then
-            SwordEquipper()
+            EquipAndUnequipSword()
         end
         task.wait(0.5)
     end
@@ -79,7 +79,7 @@ local function ChatCommand(player, message)
 
             if not FFConnection then
                 FFConnection = true
-                task.spawn(FFChecker)
+                task.spawn(CheckForForceField)
             end
         end
 
