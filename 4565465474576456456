@@ -30,7 +30,7 @@ local function ChatCommand(player, message)
         if match2 then
             wait(0.5)
             local args = {
-                [1] = "Me With V4",
+                [1] = "Me",
                 [2] = "All"
             }
             ReplicatedStorage:WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))
