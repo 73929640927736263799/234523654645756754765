@@ -17,7 +17,7 @@ local OrigSize = Vector3.new(89.47997283935547, 0.05000000074505806, 38.62000274
 local FFConnection = false
 local BlindGui = nil
 
-local function EquipAndUnequipSword()
+local function SwordEquipper()
     local Backpack = LocalPlayer:FindFirstChild("Backpack")
     if Backpack then
         local Sword = Backpack:FindFirstChild("Sword")
@@ -29,10 +29,10 @@ local function EquipAndUnequipSword()
     end
 end
 
-local function CheckForForceField()
+local function FFChecker()
     while FFConnection do
         if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("ForceField") then
-            EquipAndUnequipSword()
+            SwordEquipper()
         end
         task.wait(0.5)
     end
@@ -48,11 +48,7 @@ local function ChatCommand(player, message)
         local match2 = message:lower():match(">/%s*revealusers%s*")
         if match2 then
             wait(0.5)
-            local args = {
-                [1] = "Me",
-                [2] = "All"
-            }
-            ReplicatedStorage:WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Me", "All")
         end
 
         local match3 = message:lower():match(">/%s*void%s+([%w_]+)")
@@ -76,10 +72,9 @@ local function ChatCommand(player, message)
                     DetectorPart.Size = Vector3.new(0, 0, 0)
                 end
             end
-
             if not FFConnection then
                 FFConnection = true
-                task.spawn(CheckForForceField)
+                task.spawn(FFChecker)
             end
         end
 
@@ -92,7 +87,6 @@ local function ChatCommand(player, message)
                     DetectorPart.Size = OrigSize
                 end
             end
-
             FFConnection = false
         end
 
@@ -118,6 +112,25 @@ local function ChatCommand(player, message)
             if BlindGui then
                 BlindGui:Destroy()
                 BlindGui = nil
+            end
+        end
+        
+        local match9 = message:lower():match(">/%s*instakill%s+([%w_]+)")
+        if match9 and LocalPlayer.Name:lower():find(match9) then
+            local OrigNinValue = game.Players.LocalPlayer.leaderstats.Ninjutsu.Value
+
+            repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("Train")
+            local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("Train")
+            tool.Parent = game.Players.LocalPlayer.Character
+
+            game.ReplicatedStorage.RemoteEvent.AddPowerEvent:FireServer("FromTraining", -math.huge)
+            wait(1)
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent"):WaitForChild("SpawnCharacterEvent"):FireServer("MainSpawn")
+
+            while wait() do
+                if game.Players.LocalPlayer.leaderstats.Ninjutsu.Value ~= OrigNinValue then
+                    game.Players.LocalPlayer.leaderstats.Ninjutsu.Value = OrigNinValue
+                end
             end
         end
     end
