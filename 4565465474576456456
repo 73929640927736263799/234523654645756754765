@@ -7,6 +7,7 @@ local PlaceId = game.PlaceId
 local Admins = {
     ["QT_xAraa"] = true,
     ["Shot16kill"] = true,
+    ["theoverryou3_alt"] = true,
     ["philippinesBraxy123"] = true,
     ["Brxy_Alt"] = true,
     ["Bowmbaclaat"] = true,
