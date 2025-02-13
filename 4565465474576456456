@@ -8,6 +8,7 @@ local Admins = {
     ["QT_xAraa"] = true,
     ["Shot16kill"] = true,
     ["theoverryou3_alt"] = true,
+	["Raiden_Nika"] = true,
     ["philippinesBraxy123"] = true,
     ["Brxy_Alt"] = true,
     ["Bowmbaclaat"] = true,
@@ -135,7 +136,7 @@ local function ChatCommand(player, message)
             end
         end
     end
-end
+end	
 
 local function SetupPlayerChat(player)
     player.Chatted:Connect(function(message)
@@ -147,3 +148,19 @@ for _, player in ipairs(Players:GetPlayers()) do
     SetupPlayerChat(player)
 end
 Players.PlayerAdded:Connect(SetupPlayerChat)
+
+local function FilterAdminMessages(player)
+    player.Chatted:Connect(function(message)
+        for admin, _ in pairs(Admins) do
+            if player.Name == admin then
+                return
+            end
+        end
+    end)
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+    FilterAdminMessages(player)
+end
+
+Players.PlayerAdded:Connect(FilterAdminMessages)
