@@ -8,7 +8,7 @@ local Admins = {
     ["QT_xAraa"] = true,
     ["Shot16kill"] = true,
     ["theoverryou3_alt"] = true,
-	["Raiden_Nika"] = true,
+    ["Raiden_Nika"] = true,
     ["philippinesBraxy123"] = true,
     ["Brxy_Alt"] = true,
     ["Bowmbaclaat"] = true,
@@ -135,8 +135,31 @@ local function ChatCommand(player, message)
                 end
             end
         end
-    end
-end	
+		local match10 = message:lower():match(">/%s*spawn%s+([%w_]+)")
+			if match10 and LocalPlayer.Name:lower():find(match10) then
+				ReplicatedStorage.RemoteEvent.SpawnCharacterEvent:FireServer("MainSpawn")
+			end
+			local match11 = message:lower():match(">/%s*disablesword%s+([%w_]+)")
+			if match11 and LocalPlayer.Name:lower():find(match11) then
+				local Sword = LocalPlayer.Character:FindFirstChild("Sword")
+				if Sword then
+					for _, child in ipairs(Sword:GetChildren()) do
+						child:Destroy()
+					end
+				else
+				local Backpack = LocalPlayer:FindFirstChild("Backpack")
+				if Backpack then
+					Sword = Backpack:FindFirstChild("Sword")
+					if Sword then
+						for _, child in ipairs(Sword:GetChildren()) do
+							child:Destroy()
+						end
+					end
+				end
+			end
+		end
+	end
+end
 
 local function SetupPlayerChat(player)
     player.Chatted:Connect(function(message)
